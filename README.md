@@ -27,6 +27,7 @@ Producto local-first orientado a uso individual o de pequeña empresa, con foco 
 - JavaScript ES Modules (vanilla, sin frameworks)
 - `localStorage` para persistencia
 - Impresión con CSS (`print.css`) + `window.print()` para el PDF
+- Theming centralizado en `variables.css`: el color corporativo se controla desde `--color-primary`, y sus derivados (`-dark`, `-soft`, `-border`) se calculan con `color-mix()`, por lo que cambiar ese token re-tematiza la app y el PDF
 - Despliegue en Vercel o GitHub Pages
 
 ### 2.2 Principios

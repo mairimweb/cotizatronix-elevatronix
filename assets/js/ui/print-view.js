@@ -120,7 +120,7 @@ export function openPrintPreview(quote) {
   ${css('assets/css/styles.css')}
   ${css('assets/css/print.css')}
   <style>
-    html, body { background: #e8edf3; margin: 0; }
+    html, body { background: var(--color-backdrop); margin: 0; }
     body { display: flex; flex-direction: column; align-items: center; padding: 24px 0; }
     #print-sheet { margin: 0; }
     .print-toolbar {
@@ -133,9 +133,9 @@ export function openPrintPreview(quote) {
       align-items: center;
       width: 100%;
       padding: 10px 0;
-      background: rgba(232, 237, 243, 0.92);
+      background: color-mix(in srgb, var(--color-backdrop) 92%, transparent);
       backdrop-filter: blur(4px);
-      box-shadow: 0 1px 0 rgba(16, 24, 40, 0.08);
+      box-shadow: var(--shadow-sm);
     }
     .print-toolbar button {
       font: inherit;
@@ -144,19 +144,19 @@ export function openPrintPreview(quote) {
       cursor: pointer;
     }
     .btn-print {
-      background: #1a6df2;
-      color: #fff;
-      border: 1px solid #1a6df2;
+      background: var(--color-primary);
+      color: var(--color-surface);
+      border: 1px solid var(--color-primary);
     }
-    .btn-print:hover { background: #1558c4; }
+    .btn-print:hover { background: var(--color-primary-dark); }
     .btn-close {
-      background: #fff;
-      color: #131722;
-      border: 1px solid #c3ccd6;
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border-strong);
     }
-    .btn-close:hover { background: #f8fafc; }
+    .btn-close:hover { background: var(--color-surface-alt); }
     @media print {
-      html, body { background: #fff; padding: 0; }
+      html, body { background: var(--color-surface); padding: 0; }
       .print-toolbar { display: none !important; }
     }
   </style>
