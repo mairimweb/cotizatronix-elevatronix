@@ -1,4 +1,5 @@
 export const CONFIG = {
+  AUTH_ENABLED: false,
   QUOTE_LIMIT: 8,
   CURRENCIES: [
     { code: 'AR$', name: 'Peso Argentino', tax: 0.21 },

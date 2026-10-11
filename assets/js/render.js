@@ -224,6 +224,7 @@ function persist() {
 }
 
 function requireValidSession() {
+  if (!CONFIG.AUTH_ENABLED) return true;
   if (hasValidSession()) return true;
   checkSessionGate();
   return false;
@@ -534,6 +535,7 @@ async function handleAuthLogin() {
 }
 
 function handleLogout() {
+  if (!CONFIG.AUTH_ENABLED) return;
   clearSession();
   lockApp();
   openLoginDialog();
@@ -549,6 +551,7 @@ export function startSessionWatch() {
 }
 
 function checkSessionGate() {
+  if (!CONFIG.AUTH_ENABLED) return;
   if (document.body.classList.contains('is-auth-locked')) return;
   if (!hasValidSession()) {
     lockApp();

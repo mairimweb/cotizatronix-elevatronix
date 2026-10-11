@@ -6,7 +6,7 @@
   --color-text-muted: #5b6472;
   --color-border: #dbe1e8;
   --color-border-strong: #c3ccd6;
-  --color-primary: #ca333b;
+  --color-primary: #e16318;
   --color-primary-dark: color-mix(in srgb, var(--color-primary) 85%, #000);
   --color-primary-soft: color-mix(in srgb, var(--color-primary) 12%, #fff);
   --color-primary-border: color-mix(in srgb, var(--color-primary) 38%, #fff);

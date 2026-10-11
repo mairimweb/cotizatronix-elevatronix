@@ -11,7 +11,7 @@ export const EMISOR = {
     title: 'Importante',
     text: 'De encontrarse alguna anomalía o vicio oculto luego del desarme, se le informará a vuestro personal a cargo detallando costos de reparación y/o repuestos reemplazados.'
   },
-  activationCode: 'COTI-2026-CLAVE',
-  proveedorEmail: 'mau@email.com'
+  activationCode: 'COTIX2026',
+  proveedorEmail: 'elevatronix@gmail.com'
 };
 

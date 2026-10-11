@@ -170,6 +170,7 @@ nombreArchivo = título = `${numero} - ${nombreCliente}`
 
 ### 7.3 Puerta de acceso (`auth.js`)
 
+- **`CONFIG.AUTH_ENABLED`** en `config.js` enciende/apaga la puerta de acceso. Con `false` (default actual) la app entra directo, sin overlay, y no hay botón "Cerrar sesión". Con `true` se reactiva todo lo de abajo.
 - La app es de uso individual: al entrar valida el correo del emisor (`EMISOR.email`) y un **código de activación** (`EMISOR.activationCode`, configurado en texto plano en `emisor.js`).
 - El `EMISOR.activationCode` es la **fuente única** de la clave: `auth.js` deriva de él el hash de validación y el fingerprint de la sesión. Cambiar la clave en ese único lugar basta para todo.
 - Si se cambia `EMISOR.activationCode`, las **sesiones ya abiertas se invalidan** (el fingerprint cifrado del registro ya no coincide) y la app vuelve a pedir el acceso.
@@ -193,7 +194,7 @@ cotizador-virtual/
 │   │   └── print.css          → vista de impresión A4
 │   └── js/
 │   ├── app.js             → entry point, init, puerta de acceso
-│   ├── config.js          → QUOTE_LIMIT, monedas, IVA, TTL de sesión
+│   ├── config.js          → AUTH_ENABLED, QUOTE_LIMIT, monedas, IVA, TTL de sesión
 │   ├── auth.js            → acceso: hash SHA-256 del código, sesión cifrada (sin DOM)
 │   ├── emisor.js          → objeto emisor fijo
 │   ├── state.js           → estado global en memoria
