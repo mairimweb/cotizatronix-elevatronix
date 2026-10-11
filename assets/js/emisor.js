@@ -1,0 +1,16 @@
+export const EMISOR = {
+  name: 'Elevatronix',
+  cuit: 'CUIT 20-28304-415-8',
+  address: 'Arturo Frondizi 3751, Villa Pueyrredón, San Martín, Pcia de Bs.As.',
+  phone: '+54 11 1234-5678',
+  service: '1131663359',
+  serviceSell: '1126043358',
+  email: 'elevatronix@gmail.com',
+  highlight: {
+    title: 'Importante',
+    text: 'De encontrarse alguna anomalía o vicio oculto luego del desarme, se le informará a vuestro personal a cargo detallando costos de reparación y/o repuestos reemplazados.'
+  },
+  activationCode: 'COTI-2026-CLAVE',
+  proveedorEmail: 'mau@email.com'
+};
+
