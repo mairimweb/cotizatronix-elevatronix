@@ -34,6 +34,10 @@ export function buildPrintSheet(quote, base = '') {
        </div>`
     : '';
 
+  const websiteHref = EMISOR.website
+    ? `https://${String(EMISOR.website).replace(/^https?:\/\//i, '')}`
+    : '';
+
   return `
     <header class="print-header">
       <div class="ph-brand">
@@ -43,6 +47,7 @@ export function buildPrintSheet(quote, base = '') {
           <p>${escapeHtml(EMISOR.cuit)}</p>
           <p>${escapeHtml(EMISOR.address)}</p>
           <p>${escapeHtml(EMISOR.phone)}${EMISOR.email ? ` · ${escapeHtml(EMISOR.email)}` : ''}</p>
+          ${EMISOR.website ? `<p class="ph-web"><a href="${escapeHtml(websiteHref)}" target="_blank" rel="noopener noreferrer">${escapeHtml(EMISOR.website)}</a></p>` : ''}
         </div>
       </div>
       <div class="ph-doc">

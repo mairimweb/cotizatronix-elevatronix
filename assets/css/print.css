@@ -38,6 +38,11 @@
   color: #444b57;
 }
 
+.ph-web a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .ph-brand {
   display: flex;
   align-items: center;

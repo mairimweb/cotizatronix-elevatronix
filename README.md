@@ -44,7 +44,7 @@ Producto local-first orientado a uso individual o de pequeña empresa, con foco 
 ### 3.1 Emisor (datos de la empresa)
 
 - **Fijo en un objeto JavaScript** (`assets/js/emisor.js`), no editable por el usuario.
-- Incluye: nombre, CUIT, dirección, teléfono y correo; el pie del documento (marca de agua con el nombre) y el enlace "contactá al desarrollador" del historial se generan a partir de estos datos.
+- Incluye: nombre, CUIT, dirección, teléfono, correo y sitio web; el pie del documento (marca de agua con el nombre) y el enlace "contactá al desarrollador" del historial se generan a partir de estos datos.
 - Mensaje destacado (`highlight: { title, text }`): se muestra como banner arriba del contenido en ambas vistas (Nueva e Historial) y como bloque resaltado en el pie del documento impreso. Si está vacío, no se renderiza.
 - Sin logo editable, sin módulo de configuración.
 

@@ -6,6 +6,7 @@ export const EMISOR = {
   service: '1131663359',
   serviceSell: '1126043358',
   email: 'elevatronix@gmail.com',
+  website: 'www.elevatronix.com.ar',
   highlight: {
     title: 'Importante',
     text: 'De encontrarse alguna anomalía o vicio oculto luego del desarme, se le informará a vuestro personal a cargo detallando costos de reparación y/o repuestos reemplazados.'

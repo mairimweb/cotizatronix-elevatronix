@@ -102,6 +102,15 @@ button {
   letter-spacing: -0.01em;
 }
 
+.view-header-emisor .vh-link {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.view-header-emisor .vh-link:hover {
+  text-decoration: underline;
+}
+
 /* ---------- Sidebar ---------- */
 
 .sidebar {
