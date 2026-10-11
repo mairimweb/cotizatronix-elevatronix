@@ -31,6 +31,11 @@ export function makeQuoteNumber(client, date = new Date()) {
   return `${slug}_${date.getFullYear()}${p(date.getMonth() + 1)}${p(date.getDate())}-${p(date.getHours())}${p(date.getMinutes())}${p(date.getSeconds())}`;
 }
 
+export function makeInvoiceNumber(counter, client) {
+  const slug = sanitizeClientSlug(client) || 'CLIENTE';
+  return CONFIG.NUMBERING.SLUG_ACTIVE ? `${counter}_${slug}` : String(counter);
+}
+
 export function resolveNumberCollision(base, existingNumbers = []) {
   if (!existingNumbers.includes(base)) return base;
   for (const suffix of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {

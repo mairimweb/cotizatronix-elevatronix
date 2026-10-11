@@ -2,8 +2,11 @@ import { CONFIG } from './config.js';
 import { makeValidUntil } from './quote.js';
 
 const STORAGE_KEY = 'cotizador-v0.1:quotes';
+const COUNTER_KEY = 'cotizador-v0.1:invoice-counter';
 const SEED_FLAG_KEY = 'cotizador-v0.1:seeded';
 const SEED_NUMBERS = new Set(['COT-20260903-101500', 'COT-20260910-163045']);
+
+const CORRELATIVE_RE = new RegExp(`^(\\d{${String(CONFIG.NUMBERING.START).length}})(?:_|$)`);
 
 function isValidQuote(q) {
   return Boolean(q && typeof q === 'object'
@@ -53,6 +56,39 @@ export function eraseQuotes() {
   }
 }
 
+export function loadCounter() {
+  try {
+    const value = Number.parseInt(localStorage.getItem(COUNTER_KEY), 10);
+    return Number.isFinite(value) && value > 0 ? value : CONFIG.NUMBERING.START;
+  } catch {
+    return CONFIG.NUMBERING.START;
+  }
+}
+
+export function saveCounter(value) {
+  try {
+    localStorage.setItem(COUNTER_KEY, String(value));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function correlativeOf(number) {
+  const match = CORRELATIVE_RE.exec(String(number ?? ''));
+  return match ? Number.parseInt(match[1], 10) : null;
+}
+
+export function reconcileCounter(quotes = []) {
+  const maxUsed = quotes.reduce((max, q) => {
+    const value = correlativeOf(q.number);
+    return value !== null && value > max ? value : max;
+  }, 0);
+  const next = Math.max(loadCounter(), maxUsed + 1);
+  saveCounter(next);
+  return next;
+}
+
 export function migrateDatabase() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -99,11 +135,12 @@ export function oldestQuote(quotes) {
   return quotes[0] || null;
 }
 
-export function exportJSONString(quotes) {
+export function exportJSONString(quotes, counter = loadCounter()) {
   return JSON.stringify({
     app: 'cotizador-virtual',
     version: '0.1',
     exportedAt: new Date().toISOString(),
+    counter,
     quotes
   }, null, 2);
 }
@@ -126,7 +163,11 @@ export function parseJSON(text) {
   if (!quotes.every(isValidQuoteForImport)) {
     throw new Error('El formato del archivo contiene errores y es incompatible.');
   }
-  return quotes.map(normalizeQuote);
+  const counter = Number.parseInt(data.counter, 10);
+  return {
+    quotes: quotes.map(normalizeQuote),
+    counter: Number.isFinite(counter) && counter > 0 ? counter : null
+  };
 }
 
 function isValidQuoteForImport(q) {

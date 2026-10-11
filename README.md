@@ -81,7 +81,7 @@ Ver §5. Cálculo canónico.
 
 - Listado de cotizaciones guardadas (hasta el tope configurable).
 - Vista previa (imprimir/exportar PDF) y eliminar.
-- Límite configurable en JS (`QUOTE_LIMIT`, default 8).
+- Límite configurable en JS (`QUOTE_LIMIT`, default 20).
 
 ### 3.7 Exportación
 
@@ -139,18 +139,20 @@ total      = base + IVA                           si U$D: total = base, sin lín
 
 ## 6. Numeración y nombres de archivo
 ```
-cliente   = nombre del cliente normalizado: sin acentos ni símbolos, espacios → `_`, máx. 32 caracteres (si queda vacío → CLIENTE)
-fechaHora = YYYYMMDD-HHMMSS  (hora local)
-numero    = `<cliente>_<fechaHora>`
-colisión en el mismo cliente y segundo → numero = `<cliente>_<fechaHora>_A`, `_B`, …
+correlativo = entero incremental que arranca en `NUMBERING.START` (config.js, hoy 2022700)
+cliente     = nombre del cliente normalizado: sin acentos ni símbolos, espacios → `_`, máx. 32 caracteres (si queda vacío → CLIENTE)
+numero      = `<correlativo>_<cliente>`   (con `NUMBERING.SLUG_ACTIVE = true`; si es `false`, solo `<correlativo>`)
+colisión    → numero = `<correlativo>_<cliente>_A`, `_B`, … (red de seguridad)
 
 nombreArchivo = título = `${numero} - ${nombreCliente}`
 ```
 
 - El número se genera al **guardar** (momento en que el cliente ya fue ingresado).
-- El sufijo (`_A`, `_B`…) solo aparece si existe otra cotización con el mismo `cliente` y `fechaHora`.
+- El correlativo se guarda de forma persistente en `localStorage` (clave `cotizador-v0.1:invoice-counter`) y **solo avanza** (`+1` por cotización guardada o reemplazada).
+- El correlativo **nunca retrocede**: al cargar o importar un respaldo se ajusta a `max(contador, mayor correlativo existente + 1)`.
+- El respaldo JSON incluye el campo `counter`, por lo que la correlatividad viaja entre PCs al importar.
 - El nombre del cliente forma parte del número (normalizado) y también del nombre de archivo/`document.title`.
-- Esta numeración evita duplicados aunque se eliminen cotizaciones.
+- Esta numeración evita duplicados aunque se eliminen cotizaciones o se borre el historial.
 
 ---
 
@@ -164,7 +166,7 @@ nombreArchivo = título = `${numero} - ${nombreCliente}`
 
 ### 7.2 Política de desborde (`QUOTE_LIMIT`)
 
-- `QUOTE_LIMIT` se define en `config.js` y es la única fuente de la restricción (hoy 8, mañana 100).
+- `QUOTE_LIMIT` se define en `config.js` y es la única fuente de la restricción (hoy 20, mañana 100).
 - Si se guardan `< LIMIT` cotizaciones → botón "Guardar cotización" habilitado (crea una nueva).
 - Si se guardan `== LIMIT` cotizaciones → botón principal deshabilitado y se habilita "Reemplazar cotización más antigua", que pide confirmación al usuario antes de reemplazar la cotización más antigua.
 
@@ -221,7 +223,7 @@ cotizador-virtual/
 
 ```js
 export const CONFIG = {
-  QUOTE_LIMIT: 8,
+  QUOTE_LIMIT: 20,
   CURRENCIES: [
     { code: 'AR$', name: 'Peso Argentino', tax: 0.21 },
     { code: 'U$D', name: 'Dólar estadounidense', tax: 0 }

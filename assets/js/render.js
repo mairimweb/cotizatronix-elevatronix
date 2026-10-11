@@ -1,6 +1,6 @@
 import { getState, startNewDraft, setQuotes, existingNumbers } from './state.js';
 import { CONFIG } from './config.js';
-import { resolveNumberCollision, makeQuoteNumber, lineTotal, validateQuote, isItemComplete, toISODate } from './quote.js';
+import { resolveNumberCollision, makeInvoiceNumber, lineTotal, validateQuote, isItemComplete, toISODate } from './quote.js';
 import { formatMoney } from './formatters.js';
 import {
   isAtLimit,
@@ -13,7 +13,10 @@ import {
   exportJSONString,
   parseJSON,
   loadQuotes,
-  findInDatabase
+  findInDatabase,
+  loadCounter,
+  saveCounter,
+  reconcileCounter
 } from './storage.js';
 import { sidebarMarkup } from './ui/sidebar.js';
 import { formMarkup, totalsMarkup } from './ui/quote-form.js';
@@ -77,7 +80,9 @@ export function render() {
 export function unlockApp() {
   if (!privateDataLoaded) {
     migrateDatabase();
-    setQuotes(loadQuotes());
+    const quotes = loadQuotes();
+    setQuotes(quotes);
+    reconcileCounter(quotes);
     privateDataLoaded = true;
   }
   render();
@@ -240,7 +245,8 @@ function handleSaveQuote() {
     return;
   }
 
-  state.draft.number = resolveNumberCollision(makeQuoteNumber(state.draft.client), existingNumbers());
+  const counter = loadCounter();
+  state.draft.number = resolveNumberCollision(makeInvoiceNumber(counter, state.draft.client), existingNumbers());
   const savedNumber = state.draft.number;
   pushQuote(state.quotes, clone(state.draft));
 
@@ -248,6 +254,8 @@ function handleSaveQuote() {
     showMessage('No se pudo guardar: almacenamiento lleno o bloqueado. Exportá un respaldo JSON.', 'error');
     return;
   }
+
+  saveCounter(counter + 1);
 
   const fullAfter = isAtLimit(state.quotes);
   if (!fullAfter) {
@@ -282,8 +290,9 @@ function handleSaveOverwrite() {
   );
   if (!ok) return;
 
+  const counter = loadCounter();
   const freshNumber = resolveNumberCollision(
-    makeQuoteNumber(state.draft.client),
+    makeInvoiceNumber(counter, state.draft.client),
     existingNumbers().filter((n) => n !== oldest.number)
   );
   const replacement = { ...clone(state.draft), number: freshNumber };
@@ -296,6 +305,7 @@ function handleSaveOverwrite() {
     return;
   }
 
+  saveCounter(counter + 1);
   startNewDraft();
   navigate('history');
   showMessage(`Se reemplazó ${oldest.number}. Nueva cotización: ${freshNumber}.`, 'ok');
@@ -427,7 +437,7 @@ function handleImportFile(inputEl) {
   reader.onload = () => {
     try {
       if (!requireValidSession()) return;
-      const quotes = parseJSON(String(reader.result));
+      const { quotes, counter } = parseJSON(String(reader.result));
       if (getState().quotes.length + quotes.length > CONFIG.QUOTE_LIMIT) {
         blockImport();
         return;
@@ -435,6 +445,8 @@ function handleImportFile(inputEl) {
       if (!window.confirm(`Se importarán ${quotes.length} cotizaciones. ¿Continuar?`)) return;
       setQuotes(quotes);
       persist();
+      const nextCounter = Math.max(reconcileCounter(quotes), counter || 0);
+      saveCounter(nextCounter);
       startNewDraft();
       render();
       showMessage(`Importadas ${quotes.length} cotizaciones.`, 'ok');
